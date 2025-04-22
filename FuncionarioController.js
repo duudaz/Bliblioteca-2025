@@ -36,4 +36,31 @@ async function alterar(req, res) {
     res.json(respostaBanco);
 }
 
-export default { listar, selecionar, inserir, alterar };
+// Demitir funcionário
+async function demitirFuncionario(req, res) {
+    const { idfuncionario, data_demissao } = req.body;
+
+    try {
+        const funcionario = await Funcionario.findByPk(idfuncionario);
+
+        if (!funcionario) {
+            return res.status(404).json({ erro: "Funcionário não encontrado." });
+        }
+
+        if (!funcionario.ativo) {
+            return res.status(400).json({ erro: "Funcionário já foi demitido anteriormente." });
+        }
+
+        funcionario.ativo = false;
+        funcionario.demissao = data_demissao;
+
+        await funcionario.save();
+
+        return res.json({ mensagem: "Funcionário demitido com sucesso.", funcionario });
+
+    } catch (erro) {
+        return res.status(500).json({ erro: "Erro ao tentar demitir funcionário.", detalhes: erro.message });
+    }
+}
+
+export default { listar, selecionar, inserir, alterar, demitirFuncionario };
