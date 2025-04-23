@@ -94,4 +94,48 @@ async function definirSenha(req, res) {
     }
 }
 
-export default { listar, selecionar, inserir, alterar, demitirFuncionario, definirSenha };
+//Login Funcionario
+
+async function loginFuncionario(req, res) {
+    const { email, senha } = req.body;
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ erro: "E-mail inválido." });
+    }
+
+    if (!senha) {
+        return res.status(400).json({ erro: "Senha não informada." });
+    }
+
+    try {
+        const funcionario = await Funcionario.findOne({
+            where: {
+                email: email,
+                senha: senha
+            }
+        });
+
+        if (!funcionario) {
+            return res.status(401).json({ erro: "E-mail ou senha incorretos." });
+        }
+
+        if (!funcionario.ativo) {
+            return res.status(403).json({ erro: "Funcionário inativo." });
+        }
+
+        const token = new Date().toISOString();
+        funcionario.token = token;
+        await funcionario.save();
+
+        return res.status(200).json({
+            mensagem: "Login realizado com sucesso.",
+            token: token
+        });
+
+    } catch (erro) {
+        return res.status(500).json({ erro: "Erro interno ao tentar realizar login.", detalhes: erro.message });
+    }
+}
+
+
+export default { listar, selecionar, inserir, alterar, demitirFuncionario, definirSenha, loginFuncionario  };

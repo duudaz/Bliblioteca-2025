@@ -62,10 +62,10 @@ app.delete('/usuario/:id', usuario.excluir);
 app.get('/funcionario', funcionario.listar);
 app.get('/funcionario/:id', funcionario.selecionar);
 app.post('/funcionario', funcionario.inserir);
-app.put('/funcionario/:id', funcionario.alterar);
-
-// Rota demissão de funcionário 
+app.put('/funcionario/:id', funcionario.alterar); 
 app.post('/funcionarios/demitir', funcionario.demitirFuncionario);
+app.post('/funcionario/definir-senha', funcionario.definirSenha);
+app.post('/funcionario/login', funcionario.loginFuncionario);
 
 // Rotas de empréstimo
 app.get('/emprestimo', emprestimo.listar);
@@ -75,9 +75,6 @@ app.put('/devolver/:id', emprestimo.devolver);
 
 // Devolução
 app.post("/devolver", devolucao);
-
-// Rota definir senha do funcionário
-app.post('/funcionario/definir-senha', funcionario.definirSenha);
 
 app.listen(3000, () => {
     console.log(`Servidor rodando.`);
