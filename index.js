@@ -76,6 +76,9 @@ app.put('/devolver/:id', emprestimo.devolver);
 // Devolução
 app.post("/devolver", devolucao);
 
+// Rota definir senha do funcionário
+app.post('/funcionario/definir-senha', funcionario.definirSenha);
+
 app.listen(3000, () => {
     console.log(`Servidor rodando.`);
 });

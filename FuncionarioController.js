@@ -63,4 +63,35 @@ async function demitirFuncionario(req, res) {
     }
 }
 
-export default { listar, selecionar, inserir, alterar, demitirFuncionario };
+// Definir senha
+async function definirSenha(req, res) {
+    const { codigo, senha } = req.body;
+
+    try {
+        if (!codigo || isNaN(codigo)) {
+            return res.status(400).json({ erro: 'Código de funcionário inválido.' });
+        }
+
+        if (!senha || senha.length < 6 || senha.length > 20) {
+            return res.status(400).json({ erro: 'A senha deve ter entre 6 e 20 caracteres.' });
+        }
+
+        const funcionario = await Funcionario.findByPk(codigo);
+
+        if (!funcionario) {
+            return res.status(404).json({ erro: 'Funcionário não encontrado.' });
+        }
+
+        funcionario.senha = senha;
+        funcionario.token = null;
+        await funcionario.save();
+
+        return res.status(200).json({ mensagem: 'Senha definida com sucesso.' });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ erro: 'Erro interno ao definir senha.' });
+    }
+}
+
+export default { listar, selecionar, inserir, alterar, demitirFuncionario, definirSenha };
